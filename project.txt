@@ -1,0 +1,95 @@
+                                                                              PROJECT
+Create Schema:"logistic"
+
+1.Employee_Details Table
+
+CREATE TABLE `employee_details` (
+  `E_ID` int NOT NULL,
+  `E_NAME` varchar(30) DEFAULT NULL,
+  `E_DESIGNATION` varchar(40) DEFAULT NULL,
+  `E_ADDR` varchar(100) DEFAULT NULL,
+  `E_BRANCH` varchar(15) DEFAULT NULL,
+  `E_CONT_NO` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`E_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+2.Membership Table
+
+CREATE TABLE `membership` (
+  `M_ID` int NOT NULL,
+  `Start_date` text,
+  `End_date` text,
+  PRIMARY KEY (`M_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+3.Customer Table
+
+CREATE TABLE `customer` (
+  `C_ID` int NOT NULL,
+  `M_ID` int DEFAULT NULL,
+  `C_NAME` varchar(30) DEFAULT NULL,
+  `C_EMAIL_ID` varchar(50) DEFAULT NULL,
+  `C_TYPE` varchar(30) DEFAULT NULL,
+  `C_ADDR` varchar(100) DEFAULT NULL,
+  `C_CONT_NO` varchar(10) DEFAULT NULL,
+  PRIMARY KEY (`C_ID`),
+  KEY `M_ID_idx` (`M_ID`),
+  CONSTRAINT `M_ID` FOREIGN KEY (`M_ID`) REFERENCES `membership` (`M_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+4.Payment_Details Table
+
+CREATE TABLE `payment_details` (
+  `Payment_ID` varchar(40) NOT NULL,
+  `C_ID` int DEFAULT NULL,
+  `SH_ID` varchar(6) DEFAULT NULL,
+  `AMOUNT` int DEFAULT NULL,
+  `Payment_Status` varchar(10) DEFAULT NULL,
+  `Payment_Mode` varchar(25) DEFAULT NULL,
+  `Payment_Date` text,
+  PRIMARY KEY (`Payment_ID`),
+  KEY `C_ID_idx` (`C_ID`),
+  KEY `SH_ID_idx` (`SH_ID`),
+  CONSTRAINT `C_ID` FOREIGN KEY (`C_ID`) REFERENCES `customer` (`C_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `SH_ID1` FOREIGN KEY (`SH_ID`) REFERENCES `status` (`SH_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+5.Shipment_Details Table
+
+CREATE TABLE `shipment_details` (
+  `SH_ID` varchar(6) NOT NULL,
+  `C_ID` int DEFAULT NULL,
+  `SH_CONTENT` varchar(40) DEFAULT NULL,
+  `SH_DOMAIN` varchar(15) DEFAULT NULL,
+  `SER_TYPE` varchar(15) DEFAULT NULL,
+  `SH_WEIGHT` varchar(10) DEFAULT NULL,
+  `SH_CHARGES` int DEFAULT NULL,
+  `SR_ADDR` varchar(100) DEFAULT NULL,
+  `DS_ADDR` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`SH_ID`),
+  KEY `C_ID_idx` (`C_ID`),
+  CONSTRAINT `C_ID1` FOREIGN KEY (`C_ID`) REFERENCES `customer` (`C_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+6.Status Table
+
+CREATE TABLE `status` (
+  `SH_ID` varchar(6) NOT NULL,
+  `Current_Status` varchar(15) DEFAULT NULL,
+  `Sent_date` text,
+  `Delivery_date` text,
+  PRIMARY KEY (`SH_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+7.Employee Manages Shipment Table
+
+CREATE TABLE `employee_manages_shipment` (
+  `Employee_E_ID` int DEFAULT NULL,
+  `Shipment_Sh_ID` varchar(6) DEFAULT NULL,
+  `Status_Sh_ID` varchar(6) DEFAULT NULL,
+  KEY `E_ID_idx` (`Employee_E_ID`),
+  KEY `SH_ID_idx` (`Shipment_Sh_ID`),
+  KEY `SH_ID_idx1` (`Status_Sh_ID`),
+  CONSTRAINT `E_ID` FOREIGN KEY (`Employee_E_ID`) REFERENCES `employee_details` (`E_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `SH_ID` FOREIGN KEY (`Shipment_Sh_ID`) REFERENCES `shipment_details` (`SH_ID`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
